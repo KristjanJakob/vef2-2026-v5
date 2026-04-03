@@ -1,4 +1,4 @@
-import './globals.css';
+import './globals.scss';
 import Link from 'next/link';
 
 export default function RootLayout({
