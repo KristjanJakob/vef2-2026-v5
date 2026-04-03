@@ -8,7 +8,7 @@ export default async function PostsPage() {
     <main>
       <h1>Fréttir</h1>
       <ul>
-        {posts.map((post: any) => (
+        {posts.map((post) => (
           <li key={post.slug}>
             <Link href={`/frettir/${post.slug}`}>{post.title}</Link>
             <p>{post.excerpt}</p>

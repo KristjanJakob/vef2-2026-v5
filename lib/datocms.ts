@@ -1,3 +1,19 @@
+export type Homepage = {
+    title: string;
+    intro: string;
+};
+  
+export type Post = {
+    title: string;
+    slug: string;
+    excerpt: string;
+};
+  
+export type PostDetail = {
+    title: string;
+    slug: string;
+    content: string;
+};
 const API_URL = 'https://graphql.datocms.com/';
 const API_TOKEN = process.env.DATOCMS_API_TOKEN!;
 
@@ -47,16 +63,75 @@ export async function getPosts() {
   return data.allPosts;
 }
 
-export async function getPostBySlug(slug: string) {
+import { executeQuery } from '@datocms/cda-client';
+
+export type Homepage = {
+  title: string;
+  intro: string;
+};
+
+export type Post = {
+  title: string;
+  slug: string;
+  excerpt: string;
+};
+
+export type PostDetail = {
+  title: string;
+  slug: string;
+  content: string;
+};
+
+export async function performRequest<T>(
+  query: string,
+  variables?: Record<string, unknown>
+) {
+  return executeQuery<T>(query, {
+    token: process.env.DATOCMS_API_TOKEN!,
+    variables,
+  });
+}
+
+export async function getHomepage(): Promise<Homepage> {
+  const query = `
+    query HomePageQuery {
+      homepage {
+        title
+        intro
+      }
+    }
+  `;
+
+  const data = await performRequest<{ homepage: Homepage }>(query);
+  return data.homepage;
+}
+
+export async function getPosts(): Promise<Post[]> {
+  const query = `
+    query PostsQuery {
+      allPosts(orderBy: publishedAt_DESC) {
+        title
+        slug
+        excerpt
+      }
+    }
+  `;
+
+  const data = await performRequest<{ allPosts: Post[] }>(query);
+  return data.allPosts;
+}
+
+export async function getPostBySlug(slug: string): Promise<PostDetail | null> {
   const query = `
     query PostBySlug($slug: String) {
       post(filter: { slug: { eq: $slug } }) {
         title
-        content
         slug
+        content
       }
     }
   `;
-  const data = await fetchAPI(query, { slug });
+
+  const data = await performRequest<{ post: PostDetail | null }>(query, { slug });
   return data.post;
 }

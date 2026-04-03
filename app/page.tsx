@@ -15,7 +15,7 @@ export default async function HomePage() {
       <section>
         <h2>Nýjustu fréttir</h2>
         <ul>
-          {posts.slice(0, 3).map((post: any) => (
+          {posts.slice(0, 3).map((post) => (
             <li key={post.slug}>
               <Link href={`/frettir/${post.slug}`}>{post.title}</Link>
               <p>{post.excerpt}</p>
